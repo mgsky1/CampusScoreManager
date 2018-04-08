@@ -1,0 +1,32 @@
+            .title{
+				text-align:center;
+			}
+			.marginBar{
+				margin-top: 60px;;
+			}
+			.form-item{
+				margin: 20px;
+				text-align: right;
+			}
+			.inner-item{
+				width: 272px;
+				margin: 0 auto;
+			}
+			.errors{
+			   color:red;
+			   
+			}
+			.errors li{ 
+                 list-style: none; 
+                 text-align: center;
+                 margin-top: 20px;
+                 font-size: 25px;
+            }
+            .errorMessage li{
+               margin-top: 14px;
+            }
+             .errorMessage{
+               color:red;
+               list-style: none;
+               text-align: center;
+           }

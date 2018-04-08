@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+    <!-- 其中  type="redirect"表示重定向url 即在浏览器的地址栏显示的是.jsp为后缀的文件-->
+  <!--******************** 登陆登出 *****************************-->
+     <package name="/" namespace="/" extends="struts-default"> 
+         <!-- 登陆Action -->
+        <action name="login" class="org.myweb.authority.LoginAction" method="login">  
+            <result name="TEACHER" type="redirect">/Teacher/index.jsp</result>  
+             <result name="STUDENT" type="redirect">/Student/index.jsp</result>  
+            <result name="FAILD">/Login.jsp</result>
+             <result name="input">/Login.jsp</result>
+        </action>  
+        
+        <!-- 登出Action -->
+        <action name="logout" class="org.myweb.authority.LogoutAction" method="execute">
+          <result name="SUCCESS" type="redirect">/Login.jsp</result>
+        </action>
+    </package>  
+    
+ <!-- ************************学生操作*************************** -->
+    
+     <package name="Student/Account" namespace="/Student/Account" extends="struts-default">
+           <!-- 学生修改密码Action -->
+        <action name="ModifyPwd" class="org.myweb.account.ModifyPasswordAction" method="execute">  
+            <result name="CONFIRMERROR" >/Student/Account/modifyPassword.jsp</result>  
+             <result name="SUCCESS" type="redirect">/Student/index.jsp</result>  
+             <result name="FAILED">/Student/Account/modifyPassword.jsp</result>
+             <result name="ERROR">/Student/Account/modifyPassword.jsp</result>
+             <result name="input">/Student/Account/modifyPassword.jsp</result>
+        </action>  
+        
+         <!-- 学生修改个人信息Action -->
+        <action name="ModifyInfo" class="org.myweb.account.ModifyStuInfoAction" method="execute">
+            <result name="SUCCESS" type="redirect">/Student/index.jsp</result>
+            <result name="FAILED">/Student/Account/modifyPersonalInfo.jsp</result>
+            <result name="ERROR">/Student/Account/modifyPersonalInfo.jsp</result>
+            <result name="input">/Student/Account/modifyPersonalInfo.jsp</result>
+        </action> 
+        
+     </package>
+
+    <package name="Student" namespace="/Student" extends="struts-default">
+    
+     <!-- 定义拦截器 -->
+     <interceptors>
+       <interceptor name="loginCheck" class="org.myweb.Interceptor.LoginInterceptor"></interceptor>
+       <interceptor-stack name="myStack">
+         <interceptor-ref name="loginCheck"></interceptor-ref>
+        <interceptor-ref name="defaultStack"></interceptor-ref>
+       </interceptor-stack>
+     </interceptors>
+     
+     <default-interceptor-ref name="myStack"></default-interceptor-ref>
+     
+     <global-results>
+       <result name="LOGIN" type="redirect">/Login.jsp</result>
+     </global-results>
+     
+      <!-- 学生查看成绩Action -->
+      <action name="getScore" class="org.myweb.student.GetScoreAction" method="execute">
+        <result name="SUCCESS">/Student/score.jsp</result>
+      </action>
+    </package>
+     
+     
+  <!-- *****************老师操作************************** -->   
+     <package name="Teacher/Account" namespace="/Teacher/Account" extends="struts-default">
+        <!-- 老师修改密码Action -->
+        <action name="ModifyPwd" class="org.myweb.account.ModifyPasswordAction" method="execute">  
+            <result name="CONFIRMERROR" >/Teacher/Account/modifyPassword.jsp</result>  
+             <result name="SUCCESS" type="redirect">/Teacher/index.jsp</result>  
+             <result name="FAILED">/Teacher/Account/modifyPassword.jsp</result>
+             <result name="ERROR">/Teacher/Account/modifyPassword.jsp</result>
+             <result name="input">/Teacher/Account/modifyPassword.jsp</result>
+        </action> 
+        
+        <!-- 老师修改个人信息Action -->
+        <action name="ModifyInfo" class="org.myweb.account.ModifyTeacherInfoAction" method="execute">
+            <result name="SUCCESS" type="redirect">/Teacher/index.jsp</result>
+            <result name="FAILED">/Teacher/Account/modifyPersonalInfo.jsp</result>
+            <result name="ERROR">/Teacher/Account/modifyPersonalInfo.jsp</result>
+            <result name="input">/Teacher/Account/modifyPersonalInfo.jsp</result>
+        </action> 
+     </package>
+     
+     
+     <package name="Teacher" namespace="/Teacher" extends="struts-default">  
+     
+     <!-- 定义拦截器 -->
+     <interceptors>
+       <interceptor name="loginCheck" class="org.myweb.Interceptor.LoginInterceptor"></interceptor>
+       <interceptor-stack name="myStack">
+         <interceptor-ref name="loginCheck"></interceptor-ref>
+        <interceptor-ref name="defaultStack"></interceptor-ref>
+       </interceptor-stack>
+     </interceptors>
+     
+     <default-interceptor-ref name="myStack"></default-interceptor-ref>
+     
+     <global-results>
+       <result name="LOGIN" type="redirect">/Login.jsp</result>
+     </global-results>
+     
+       <!-- 老师添加学生Action -->
+        <action name="addStu" class="org.myweb.teacher.addStudent" method="execute">  
+            <result name="FAILD">/Teacher/addStudent.jsp</result>
+            <result name="input">/Teacher/addStudent.jsp</result>
+            <result name="SUCCESS" type="redirect">/Teacher/stuManagement</result>
+        </action>  
+        
+        <!-- 老师添加成绩Action -->
+        <action name="addScore" class="org.myweb.teacher.AddScoreAction" method="execute">
+           <result name="SUCCESS" type="redirect">/Teacher/index.jsp</result>
+           <result name="ERROR">/Teacher/addScore.jsp?id=${stuId}</result>
+           <result name="FAILED">/Teacher/addScore.jsp?id=${stuId}</result>
+           <result name="input">/Teacher/addScore.jsp?id=${stuId}</result>
+        </action>
+        
+        <!-- 显示某位学生的成绩列表 -->
+        <action name="scoreManagement" class="org.myweb.teacher.ScoreManageAction" method="execute">
+          <result name="SUCCESS">/Teacher/scoreManagement.jsp</result>
+        </action>
+        
+        <!-- 成绩修改Action -->
+        <action name="modifyScore" class="org.myweb.teacher.ModifyScoreAction" method="execute">
+           <result name="SUCCESS" type="redirect">/Teacher/index.jsp</result>
+           <result name="FAILED">/Teacher/modifyScore.jsp?id=${pid}</result>
+           <result name="ERROR">/Teacher/modifyScore.jsp?id=${pid}</result>
+           <result name="input">/Teacher/modifyScore.jsp?id=${pid}</result>
+        </action>
+        
+        <!-- 录入成绩界面显示所有学生信息 -->
+        <action name="listStu" class="org.myweb.teacher.ListStudent" method="execute">
+           <result name="SUCCESS">/Teacher/listStu.jsp</result>
+        </action>
+        
+        <!-- 学生成绩管理页面显示所有学生信息 -->
+         <action name="listStuModify" class="org.myweb.teacher.ListStudent" method="execute">
+           <result name="SUCCESS">/Teacher/listStuModify.jsp</result>
+        </action>
+        
+        <!-- 学生管理页面列出所有的学生信息 -->
+          <action name="stuManagement" class="org.myweb.teacher.ListStudent" method="execute">
+           <result name="SUCCESS">/Teacher/stuManagement.jsp</result>
+        </action>
+        
+        <!-- 课程管理页面列出某位老师的全部课程信息 -->
+        <action name="listSubject" class="org.myweb.teacher.ListSubject" method="execute">
+          <result name="SUCCESS">/Teacher/listSubject.jsp</result>
+        </action>
+        
+        <!-- 删除学生操作 -->
+        <action name="delStu" class="org.myweb.teacher.DelStuAction" method="execute">
+          <result name="SUCCESS" type="redirect">/Teacher/stuManagement</result>
+        </action>
+        
+        
+        <!-- 修改学生信息Action -->
+        <action name="modifyStu" class="org.myweb.teacher.ModifyStudentAction" method="execute">
+         <result name="SUCCESS" type="redirect">/Teacher/index.jsp</result>
+         <result name="input">/Teacher/modifyStu.jsp?id=${id}</result>
+        </action>
+        
+        <!-- 添加课程信息Action -->
+        <action name="addSubject" class="org.myweb.teacher.AddSubjectAction" method="execute">
+          <result name="SUCCESS" type="redirect">/Teacher/listSubject</result>
+          <result name="EXIST">/Teacher/addSubject.jsp</result>
+          <result name="input">/Teacher/addSubject.jsp</result>
+        </action>
+         <!-- 删除学生Action -->
+        <action name="delSubject" class="org.myweb.teacher.DelSubjectAction" method="execute">
+          <result name="SUCCESS" type="redirect">/Teacher/listSubject</result>
+        </action>
+        
+        <!-- 修改课程信息 -->
+        <action name="modifySubject" class="org.myweb.teacher.ModifySubjectAction" method="execute">
+         <result name="SUCCESS" type="redirect">/Teacher/listSubject</result>
+         <result name="EXIST">/Teacher/modifySubject.jsp?id=${id}</result>
+         <result name="input">/Teacher/modifySubject.jsp?id=${id}</result>
+        </action>
+        
+    </package>  
+    
+  <!-- ******************************************************************************* -->
+
+     
+</struts>    

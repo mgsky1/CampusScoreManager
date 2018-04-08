@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE validators PUBLIC "-//OpenSymphony Group//XWork Validator 1.0.2//EN"
+"http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+ <validators>
+ 
+  <field name="loginName">
+    <field-validator type="requiredstring">
+      <message>登录名不能为空</message>
+    </field-validator>
+  </field>
+  
+  <field name="pwd">
+    <field-validator type="requiredstring">
+      <message>密码不能为空</message>
+    </field-validator>
+  </field>
+  
+  <field name="pwd">
+     <field-validator type="stringlength">
+       <param name="minLength">4</param>
+       <param name="maxLength">16</param>
+       <message>密码长度在4-16位之间</message>
+     </field-validator>
+  </field>
+  
+  <field name="tel">
+    <field-validator type="requiredstring">
+      <message>电话号码不能为空</message>
+    </field-validator>
+  </field>
+  
+  <field name="tel">
+     <field-validator type="regex">
+       <param name="expression">^[0-9]*$</param>
+       <message>电话必须是数字</message>
+     </field-validator>
+  </field>
+  
+  <field name="tel">
+     <field-validator type="stringlength">
+       <param name="minLength">8</param>
+       <param name="maxLength">11</param>
+       <message>电话号码至少8位，不能超过11位</message>
+     </field-validator>
+  </field>
+  
+  
+ </validators>
