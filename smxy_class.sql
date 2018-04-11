@@ -141,9 +141,9 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', '田民格', '123456', '1', 'tmg');
-INSERT INTO `user` VALUES ('2', '伍传敏', '123456', '1', 'wcm');
-INSERT INTO `user` VALUES ('3', '黄智远', '123456', '0', 'hzy');
+INSERT INTO `user` VALUES ('1', '田', '123456', '1', 'ttt');
+INSERT INTO `user` VALUES ('2', '伍', '123456', '1', 'www');
+INSERT INTO `user` VALUES ('3', '黄XX', '123456', '0', 'hhh');
 INSERT INTO `user` VALUES ('4', '张三', '123456', '0', 'zs');
 INSERT INTO `user` VALUES ('5', '李四', '123456', '0', 'ls');
 INSERT INTO `user` VALUES ('6', '王五', '123456', '0', 'ww');
