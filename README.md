@@ -2,11 +2,11 @@
 
 ## 注意
 
-这是使用SpringBoot3 + vue3构建的新版本，目前还在**适配中**。如果有愿意的朋友可以帮忙一起开发～
+这是使用SpringBoot2 + vue3构建的新版本，目前还在**适配中**。如果有愿意的朋友可以帮忙一起开发～
 
 **现在的默认分支是新版本，如果要老版本：[点击这里](https://github.com/mgsky1/CampusScoreManager/tree/master)**
 
-新版本使用的SDK为：JDK17 + vue3 + TypeScript，应该算是目前相对主流的选择了
+新版本使用的SDK为：JDK8 + vue3 + TypeScript，应该算是目前相对主流的选择了
 
 Q：为什么要做这个事情？
 
