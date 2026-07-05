@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campusscore.persistence.UserMapper">
+
+  <resultMap id="UserResultMap" type="com.campusscore.domain.User">
+    <id     property="id"           column="id"/>
+    <result property="realName"     column="real_name"/>
+    <result property="loginName"    column="login_name"/>
+    <result property="passwordHash" column="password_hash"/>
+    <result property="role"         column="role"
+            typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+    <result property="createdAt"    column="created_at"/>
+    <result property="updatedAt"    column="updated_at"/>
+  </resultMap>
+
+  <sql id="allColumns">
+    id, real_name, login_name, password_hash, role, created_at, updated_at
+  </sql>
+
+  <select id="findByLoginName" resultMap="UserResultMap">
+    SELECT <include refid="allColumns"/>
+      FROM `user`
+     WHERE LOWER(login_name) = LOWER(#{loginName})
+     LIMIT 1
+  </select>
+
+  <select id="findById" resultMap="UserResultMap">
+    SELECT <include refid="allColumns"/>
+      FROM `user`
+     WHERE id = #{id}
+     LIMIT 1
+  </select>
+
+  <insert id="insert" parameterType="com.campusscore.domain.User" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO `user` (real_name, login_name, password_hash, role)
+    VALUES (#{realName}, #{loginName}, #{passwordHash},
+            #{role, typeHandler=org.apache.ibatis.type.EnumTypeHandler})
+  </insert>
+
+  <update id="updateBasic" parameterType="com.campusscore.domain.User">
+    UPDATE `user`
+       SET real_name  = #{realName},
+           login_name = #{loginName}
+           <if test="passwordHash != null and passwordHash != ''">
+           , password_hash = #{passwordHash}
+           </if>
+     WHERE id = #{id}
+  </update>
+
+  <delete id="deleteById">
+    DELETE FROM `user` WHERE id = #{id}
+  </delete>
+
+  <select id="countByLoginNameIgnoreCase" resultType="long">
+    SELECT COUNT(*) FROM `user` WHERE LOWER(login_name) = LOWER(#{loginName})
+  </select>
+
+  <select id="countByLoginNameIgnoreCaseExcludingId" resultType="long">
+    SELECT COUNT(*)
+      FROM `user`
+     WHERE LOWER(login_name) = LOWER(#{loginName})
+       AND id &lt;&gt; #{id}
+  </select>
+</mapper>

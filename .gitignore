@@ -1,0 +1,43 @@
+# ===== Java / Maven =====
+backend/target/
+*.class
+*.jar
+*.war
+hs_err_pid*
+.mvn/wrapper/maven-wrapper.jar
+
+# ===== Node / Vite =====
+frontend/node_modules/
+frontend/dist/
+frontend/coverage/
+frontend/.vite/
+frontend/src/auto-imports.d.ts
+frontend/src/components.d.ts
+
+# ===== Env / secrets =====
+.env
+.env.local
+.env.*.local
+backend/src/main/resources/application-local.yml
+
+# ===== IDE =====
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# ===== OS =====
+.DS_Store
+Thumbs.db
+
+# ===== Coverage / Reports =====
+backend/target/site/jacoco/
+
+# ===== Legacy (在 T182 之前保留，只是不参与构建) =====
+# 保持 src/, WebRoot/ 等旧目录被追踪，直到 T182 一次性删除
+
+# ===== Spec / Agents (本地工作产物，不入库) =====
+.agents/
+specs/
+.specify/

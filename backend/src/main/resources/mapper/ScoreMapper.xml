@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campusscore.persistence.ScoreMapper">
+
+    <resultMap id="ScoreListItemMap" type="com.campusscore.persistence.dto.ScoreListItem">
+        <id property="id" column="id"/>
+        <result property="subjectId" column="subject_id"/>
+        <result property="subjectName" column="subject_name"/>
+        <result property="teacherId" column="teacher_id"/>
+        <result property="teacherName" column="teacher_name"/>
+        <result property="grade" column="grade"/>
+        <result property="score" column="score"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <resultMap id="TeacherScoreItemMap" type="com.campusscore.persistence.dto.TeacherScoreItem">
+        <id property="id" column="id"/>
+        <result property="subjectId" column="subject_id"/>
+        <result property="subjectName" column="subject_name"/>
+        <result property="grade" column="grade"/>
+        <result property="score" column="score"/>
+        <result property="editable" column="editable"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <resultMap id="ScoreMap" type="com.campusscore.domain.Score">
+        <id property="id" column="id"/>
+        <result property="studentId" column="student_id"/>
+        <result property="subjectId" column="subject_id"/>
+        <result property="teacherId" column="teacher_id"/>
+        <result property="score" column="score"/>
+        <result property="grade" column="grade"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- 学生视角 -->
+    <select id="selectByStudentId" resultMap="ScoreListItemMap">
+        SELECT
+            s.id            AS id,
+            s.subject_id    AS subject_id,
+            sub.name        AS subject_name,
+            sub.teacher_id  AS teacher_id,
+            u.real_name     AS teacher_name,
+            s.grade         AS grade,
+            s.score         AS score,
+            s.updated_at    AS updated_at
+        FROM score s
+        JOIN subject sub ON sub.id = s.subject_id
+        JOIN `user` u    ON u.id = sub.teacher_id
+        WHERE s.student_id = #{studentId}
+        ORDER BY
+        <choose>
+            <when test="orderBy != null and orderBy != ''">${orderBy}</when>
+            <otherwise>s.grade DESC, s.updated_at DESC</otherwise>
+        </choose>
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="countByStudentId" resultType="long">
+        SELECT COUNT(*) FROM score WHERE student_id = #{studentId}
+    </select>
+
+    <!-- 教师视角 -->
+    <select id="selectByStudentIdForTeacher" resultMap="TeacherScoreItemMap">
+        SELECT
+            s.id                                 AS id,
+            s.subject_id                         AS subject_id,
+            sub.name                             AS subject_name,
+            s.grade                              AS grade,
+            s.score                              AS score,
+            (sub.teacher_id = #{teacherId})      AS editable,
+            s.updated_at                         AS updated_at
+        FROM score s
+        JOIN subject sub ON sub.id = s.subject_id
+        WHERE s.student_id = #{studentId}
+        ORDER BY
+        <choose>
+            <when test="orderBy != null and orderBy != ''">${orderBy}</when>
+            <otherwise>s.grade DESC, s.updated_at DESC</otherwise>
+        </choose>
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="countByStudentIdForTeacher" resultType="long">
+        SELECT COUNT(*) FROM score WHERE student_id = #{studentId}
+    </select>
+
+    <select id="existsByStudentAndSubject" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM score
+            WHERE student_id = #{studentId} AND subject_id = #{subjectId}
+        )
+    </select>
+
+    <insert id="insert" parameterType="com.campusscore.domain.Score"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO score (student_id, subject_id, teacher_id, score, grade)
+        VALUES (#{studentId}, #{subjectId}, #{teacherId}, #{score}, #{grade})
+    </insert>
+
+    <update id="updateScore">
+        UPDATE score SET score = #{score} WHERE id = #{id}
+    </update>
+
+    <select id="findById" resultMap="ScoreMap">
+        SELECT id, student_id, subject_id, teacher_id, score, grade, created_at, updated_at
+        FROM score
+        WHERE id = #{id}
+        LIMIT 1
+    </select>
+
+    <delete id="deleteById">
+        DELETE FROM score WHERE id = #{id}
+    </delete>
+</mapper>

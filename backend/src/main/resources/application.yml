@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: campusscore-backend
+  profiles:
+    active: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 5000
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+  jackson:
+    default-property-inclusion: non_null
+    time-zone: Asia/Shanghai
+    date-format: yyyy-MM-dd'T'HH:mm:ssXXX
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  compression:
+    enabled: true
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+campusscore:
+  jwt:
+    secret: ${CAMPUSSCORE_JWT_SECRET:change-me-please-change-me-please-change-me}
+    access-ttl-minutes: 30
+    refresh-ttl-days: 7
+    issuer: campusscore
+  cors:
+    allowed-origins:
+      - http://localhost:5173
+  password:
+    bcrypt-strength: 10
+
+logging:
+  level:
+    root: INFO
+    com.campusscore: DEBUG

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campusscore.persistence.StudentMapper">
+
+    <resultMap id="StudentListItemMap" type="com.campusscore.persistence.dto.StudentListItem">
+        <id property="id" column="id"/>
+        <result property="loginName" column="login_name"/>
+        <result property="realName" column="real_name"/>
+        <result property="tel" column="tel"/>
+        <result property="address" column="address"/>
+        <result property="grade" column="grade"/>
+    </resultMap>
+
+    <sql id="baseFrom">
+        FROM student st
+        JOIN `user` u ON u.id = st.id
+        WHERE u.role = 'STUDENT'
+        <if test="keyword != null and keyword != ''">
+            AND u.real_name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+    </sql>
+
+    <select id="search" resultMap="StudentListItemMap">
+        SELECT
+            u.id          AS id,
+            u.login_name  AS login_name,
+            u.real_name   AS real_name,
+            st.tel        AS tel,
+            st.address    AS address,
+            st.grade      AS grade
+        <include refid="baseFrom"/>
+        ORDER BY
+        <choose>
+            <when test="orderBy != null and orderBy != ''">${orderBy}</when>
+            <otherwise>u.id ASC</otherwise>
+        </choose>
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT COUNT(*)
+        <include refid="baseFrom"/>
+    </select>
+
+    <select id="findById" resultMap="StudentListItemMap">
+        SELECT
+            u.id          AS id,
+            u.login_name  AS login_name,
+            u.real_name   AS real_name,
+            st.tel        AS tel,
+            st.address    AS address,
+            st.grade      AS grade
+        FROM student st
+        JOIN `user` u ON u.id = st.id
+        WHERE u.id = #{id} AND u.role = 'STUDENT'
+        LIMIT 1
+    </select>
+
+    <insert id="insertStudentRow" parameterType="com.campusscore.domain.Student">
+        INSERT INTO student (id, tel, address, grade)
+        VALUES (#{id}, #{tel}, #{address}, #{grade})
+    </insert>
+
+    <update id="updateStudentRow" parameterType="com.campusscore.domain.Student">
+        UPDATE student
+           SET tel     = #{tel},
+               address = #{address},
+               grade   = #{grade}
+         WHERE id = #{id}
+    </update>
+</mapper>

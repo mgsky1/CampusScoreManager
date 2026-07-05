@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: ${CAMPUSSCORE_DB_URL}
+    username: ${CAMPUSSCORE_DB_USER}
+    password: ${CAMPUSSCORE_DB_PASSWORD}
+
+campusscore:
+  cors:
+    # 生产必须显式列出前端域名，禁止 "*"
+    allowed-origins: ${CAMPUSSCORE_CORS_ALLOWED_ORIGINS}
+  jwt:
+    secret: ${CAMPUSSCORE_JWT_SECRET}
+
+logging:
+  level:
+    root: WARN
+    com.campusscore: INFO

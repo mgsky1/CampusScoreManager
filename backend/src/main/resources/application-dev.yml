@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/smxy_class?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+  flyway:
+    # dev profile: 加载正式迁移 V1..V4 + dev seed V5
+    locations:
+      - classpath:db/migration
+      - classpath:db/migration_dev
+  jpa:
+    show-sql: false
+
+campusscore:
+  cors:
+    allowed-origins:
+      - http://localhost:5173
+      - http://127.0.0.1:5173
+
+logging:
+  level:
+    com.campusscore.persistence: DEBUG
+    org.springframework.security: INFO

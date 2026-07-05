@@ -1,0 +1,29 @@
+# Test profile: 只跑 web/security 层，用嵌入式 H2 + 关 Flyway。
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  flyway:
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+campusscore:
+  jwt:
+    secret: test-secret-32-bytes-minimum-required-here!!
+    access-ttl-minutes: 30
+    refresh-ttl-days: 7
+    issuer: campusscore-test
+  cors:
+    allowed-origins:
+      - http://localhost:5173
+  password:
+    bcrypt-strength: 4
+
+logging:
+  level:
+    root: WARN
+    com.campusscore: INFO

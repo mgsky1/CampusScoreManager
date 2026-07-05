@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campusscore.persistence.TeacherMapper">
+
+    <resultMap id="TeacherMap" type="com.campusscore.domain.Teacher">
+        <id property="id" column="id"/>
+        <result property="tel" column="tel"/>
+    </resultMap>
+
+    <select id="findById" resultMap="TeacherMap">
+        SELECT id, tel FROM teacher WHERE id = #{id} LIMIT 1
+    </select>
+
+    <insert id="insertTeacherRow" parameterType="com.campusscore.domain.Teacher">
+        INSERT INTO teacher (id, tel) VALUES (#{id}, #{tel})
+    </insert>
+
+    <update id="updateTeacherRow" parameterType="com.campusscore.domain.Teacher">
+        UPDATE teacher SET tel = #{tel} WHERE id = #{id}
+    </update>
+</mapper>

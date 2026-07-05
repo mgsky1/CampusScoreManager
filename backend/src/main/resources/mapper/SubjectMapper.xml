@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.campusscore.persistence.SubjectMapper">
+
+    <resultMap id="SubjectMap" type="com.campusscore.domain.Subject">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="teacherId" column="teacher_id"/>
+        <result property="grade" column="grade"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <resultMap id="EntryOptionMap" type="com.campusscore.persistence.dto.SubjectEntryOption">
+        <id property="subjectId" column="subject_id"/>
+        <result property="subjectName" column="subject_name"/>
+        <result property="grade" column="grade"/>
+    </resultMap>
+
+    <select id="findEntryOptions" resultMap="EntryOptionMap">
+        SELECT
+            s.id    AS subject_id,
+            s.name  AS subject_name,
+            s.grade AS grade
+        FROM subject s
+        WHERE s.teacher_id = #{teacherId}
+          AND s.grade = #{studentGrade}
+          AND NOT EXISTS (
+              SELECT 1 FROM score sc
+              WHERE sc.subject_id = s.id AND sc.student_id = #{studentId}
+          )
+        ORDER BY s.id
+    </select>
+
+    <select id="hasAnyByTeacherAndGrade" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1 FROM subject
+            WHERE teacher_id = #{teacherId} AND grade = #{grade}
+        )
+    </select>
+
+    <select id="findByIdOwnedByTeacher" resultMap="SubjectMap">
+        SELECT id, name, teacher_id, grade, created_at
+        FROM subject
+        WHERE id = #{id} AND teacher_id = #{teacherId}
+        LIMIT 1
+    </select>
+
+    <select id="findById" resultMap="SubjectMap">
+        SELECT id, name, teacher_id, grade, created_at
+        FROM subject
+        WHERE id = #{id}
+        LIMIT 1
+    </select>
+
+    <!-- ========== US4 · CRUD ========== -->
+
+    <sql id="mineWhere">
+        FROM subject s
+        WHERE s.teacher_id = #{teacherId}
+        <if test="keyword != null and keyword != ''">
+            AND s.name LIKE CONCAT('%', #{keyword}, '%')
+        </if>
+    </sql>
+
+    <select id="selectMineByTeacher" resultMap="SubjectMap">
+        SELECT s.id, s.name, s.teacher_id, s.grade, s.created_at
+        <include refid="mineWhere"/>
+        ORDER BY
+        <choose>
+            <when test="orderBy != null and orderBy != ''">${orderBy}</when>
+            <otherwise>s.id ASC</otherwise>
+        </choose>
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="countMineByTeacher" resultType="long">
+        SELECT COUNT(*)
+        <include refid="mineWhere"/>
+    </select>
+
+    <insert id="insert" parameterType="com.campusscore.domain.Subject"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO subject (name, teacher_id, grade)
+        VALUES (#{name}, #{teacherId}, #{grade})
+    </insert>
+
+    <update id="update" parameterType="com.campusscore.domain.Subject">
+        UPDATE subject
+           SET name  = #{name},
+               grade = #{grade}
+         WHERE id = #{id}
+    </update>
+
+    <select id="existsByTeacherAndName" resultType="long">
+        SELECT COUNT(*) FROM subject
+        WHERE teacher_id = #{teacherId}
+          AND LOWER(name) = LOWER(#{name})
+    </select>
+
+    <select id="existsByTeacherAndNameExcludingId" resultType="long">
+        SELECT COUNT(*) FROM subject
+        WHERE teacher_id = #{teacherId}
+          AND LOWER(name) = LOWER(#{name})
+          AND id != #{excludingId}
+    </select>
+
+    <delete id="deleteById">
+        DELETE FROM subject WHERE id = #{id}
+    </delete>
+
+    <select id="countScoresBySubjectId" resultType="long">
+        SELECT COUNT(*) FROM score WHERE subject_id = #{subjectId}
+    </select>
+</mapper>
