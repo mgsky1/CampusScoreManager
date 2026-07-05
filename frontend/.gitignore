@@ -1,0 +1,8 @@
+node_modules
+dist
+coverage
+.vite
+src/auto-imports.d.ts
+src/components.d.ts
+.env
+.env.*.local
